@@ -25,7 +25,19 @@ RUN pip install paho-mqtt
 #Install requests
 RUN pip install requests
 
-#Install Mosquitto Broker
+#Install web3
+RUN pip install web3
+
+#Install solc-x
+RUN pip install py-solc-x
+
+#Install npm
+RUN apt-get install -y npm
+
+#Install Ganache
+RUN npm install -g -y ganache
+
+#Install Mosquitto Broker and Client
 RUN apt-get upgrade -y && \
     apt-get install -y mosquitto && \
     apt-get install -y mosquitto-clients
@@ -36,3 +48,4 @@ EXPOSE 1883
 EXPOSE 8001
 EXPOSE 8002
 EXPOSE 8025
+EXPOSE 8545
