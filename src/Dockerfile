@@ -32,10 +32,10 @@ RUN pip install web3
 RUN pip install py-solc-x
 
 #Install npm
-RUN apt-get install -y npm
+#RUN apt-get install -y npm
 
 #Install Ganache
-RUN npm install -g -y ganache
+#RUN npm install -g -y ganache
 
 #Install Mosquitto Broker and Client
 RUN apt-get upgrade -y && \
@@ -45,6 +45,7 @@ RUN apt-get upgrade -y && \
 
 #Expose Ports
 EXPOSE 1883
+EXPOSE 7545
 EXPOSE 8001
 EXPOSE 8002
 EXPOSE 8025
