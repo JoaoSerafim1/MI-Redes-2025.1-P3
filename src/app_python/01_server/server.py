@@ -138,7 +138,7 @@ def clientRequestCatcher():
 
                 elif (requestName == 'bcs'):
                     
-                    attemptCharge(fileLock, senderLock, broker, mqttPort, localServerIP, timeWindow, requestID, clientAddress, requestParameters)
+                    attemptCharge(fileLock, senderLock, broker, mqttPort, localServerIP, timeWindow, requestID, clientAddress, requestParameters, blockChainNodeIP, blockChainNodePort, blockChainContractABI, blockChainContractAddress)
                     
                 elif (requestName == 'fcs'):
 
@@ -227,6 +227,26 @@ def serverRequestHandlerThreadManager():
             newThread.start()
             threadList.append(newThread)
 
+#Funcao para gerenciar sincronizacao com uso de blockchain
+def serverBlockchainSyncHandler():
+
+    global blockChainNodeIP
+    global blockChainNodePort
+    global syncWindow
+
+    lastTime = time.time() - syncWindow
+
+    while (isExecuting == True):
+        
+        actualTime = time.time()
+
+        if (actualTime > (lastTime + syncWindow)):
+
+            lastTime = actualTime
+
+            syncWithBlockchain(fileLock, blockChainNodeIP, blockChainNodePort, blockChainContractABI, blockChainContractAddress)
+
+
 def end(isExecutingInstance: isExecutingClass):
 
     global isExecuting
@@ -246,6 +266,18 @@ def end(isExecutingInstance: isExecutingClass):
 
 #IP do servidor, porta do broker MQTT e porta para requisicoes HTTP
 localServerIP = socket.gethostbyname(socket.gethostname())
+
+#Pergunta endereco do node da blockchain
+blockChainNodeIP = input("Insira o endereço IP do Cliente da Blockchain (OU PRESSIONE ENTER para utilizar o endereço do proprio servidor): ")
+
+if (blockChainNodeIP == ""):
+    blockChainNodeIP = localServerIP
+
+#Pergunta endereco do node da blockchain
+blockChainContractABI= input("Insira o valor ABI do contrato solidity (blockchain): ")
+
+#Pergunta endereco do node da blockchain
+blockChainContractAddress = input("Insira o valor do endereço do contrato solidity (blockchain): ")
 
 #Pergunta endereco do broker MQTT
 broker = input("Insira o endereço IP do broker MQTT (OU PRESSIONE ENTER para utilizar o endereço do proprio servidor): ")
@@ -279,6 +311,11 @@ for threadIndex in range(0, maxClientThreads):
 httpManagerThread = threading.Thread(target=serverRequestHandlerThreadManager, args=())
 httpManagerThread.start()
 threadList.append(httpManagerThread)
+
+#Thread de sincronizacao utilizando blockchain
+syncManagerThread = threading.Thread(target=serverBlockchainSyncHandler, args=())
+syncManagerThread.start()
+threadList.append(syncManagerThread)
 
 #Fora dos threads, input() apenas segura a execucao do programa principal ate ser pressionado
 input()
