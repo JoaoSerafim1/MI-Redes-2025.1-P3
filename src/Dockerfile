@@ -8,6 +8,12 @@ WORKDIR /python_redes
 #Atualizar pacotes
 RUN apt-get update -y
 
+#Install wget
+RUN apt-get install -y wget
+
+#Install build essentials
+RUN apt-get install -y curl gnupg build-essential libgmp-dev
+
 #Install pip
 RUN apt-get install -y python3-pip
 
@@ -29,7 +35,7 @@ RUN pip install requests
 RUN pip install web3
 
 #Install solc-x
-RUN pip install py-solc-x
+RUN pip install py-solc-x==0.8.0
 
 #Install npm
 #RUN apt-get install -y npm
