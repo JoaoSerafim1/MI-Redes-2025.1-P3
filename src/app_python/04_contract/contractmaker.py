@@ -55,12 +55,9 @@ tx_hash = Contrato.constructor().transact({'from': conta.address})
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 endereco_contrato = tx_receipt.contractAddress
 
-# 7. Instanciar contrato
-lista = w3.eth.contract(address=endereco_contrato, abi=abi)
 
 print("*************************************************************************")
 print("CONTRATO ESTABELECIDO!")
 print("ABI: " + str(abi))
 print("ENDERECO: " + str(endereco_contrato))
-print("IP da maquina local: " + str(localServerIP))
 print("*************************************************************************")
