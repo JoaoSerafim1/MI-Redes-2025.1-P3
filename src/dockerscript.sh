@@ -18,6 +18,7 @@ if [ $1 = 'build' ]; then
     docker container remove -f charge_server_03
     docker container remove -f charge_server_02
     docker container remove -f charge_server_01
+    docker container remove -f blockchain_contract_maker
     docker network remove dev_bridge
     docker image remove python-redes-image
 
@@ -50,6 +51,7 @@ if [ $1 = 'loadimage' ]; then
     docker container remove -f charge_server_03
     docker container remove -f charge_server_02
     docker container remove -f charge_server_01
+    docker container remove -f blockchain_contract_maker
     docker network remove dev_bridge
     docker image remove python-redes-image
 
@@ -77,6 +79,9 @@ if [ $1 = 'run' ]; then
     docker container remove -f charge_server_03
     docker container remove -f charge_server_02
     docker container remove -f charge_server_01
+    docker container remove -f blockchain_contract_maker
+
+    docker run -d -it --network=dev_bridge --name=blockchain_contract_maker python-redes-image
 
     docker run -d -it --network=dev_bridge --name=charge_server_01 python-redes-image
     docker run -d -it --network=dev_bridge --name=charge_server_02 python-redes-image
@@ -156,10 +161,13 @@ if [ $1 = 'stop' ]; then
     docker container remove -f charge_server_03
     docker container remove -f charge_server_02
     docker container remove -f charge_server_01
+    docker container remove -f blockchain_contract_maker
 fi
 
 if [ $1 = 'update' ]; then
     
+    docker container cp ./app_python/04_contract blockchain_contract_maker:/python_redes/
+
     docker container cp ./app_python/01_server charge_server_01:/python_redes/
     docker container cp ./app_python/01_server charge_server_02:/python_redes/
     docker container cp ./app_python/01_server charge_server_03:/python_redes/
@@ -217,6 +225,9 @@ fi
 
 if [ $1 = 'control' ]; then
     
+    if [ $2 = 'bcm' ]; then
+        docker exec -it blockchain_contract_maker bash
+    fi
     if [ $2 = 'sv01' ]; then
         docker exec -it charge_server_01 bash
     fi
@@ -421,6 +432,7 @@ if [ $1 = 'scrap' ]; then
     docker container remove -f charge_server_03
     docker container remove -f charge_server_02
     docker container remove -f charge_server_01
+    docker container remove -f blockchain_contract_maker
     docker network remove dev_bridge
     docker image remove python-redes-image
 fi
