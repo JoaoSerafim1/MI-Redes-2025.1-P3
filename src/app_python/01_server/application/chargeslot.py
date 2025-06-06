@@ -110,7 +110,7 @@ def getNearestAvailableStationInfo(fileLock: threading.Lock, senderLock: threadi
     sendResponse(senderLock, broker, port, serverIP, vehicleAddress, [IDToReturn, str(distanceToReturn), unitaryPriceToReturn])
 
 #Funcao para tentar realizar (reserva de) abastecimento
-def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, port, serverIP, timeWindow, requestID, vehicleAddress, requestParameters, blockchainNodeIP, blockchainNodePort, blockchainContractABI, blockchainContractAddress):
+def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, port, serverIP, timeWindow, requestID, vehicleAddress, requestParameters, blockchainNodeIP, blockchainNodePort, blockchainAccountPrivateKey, blockchainContractABI, blockchainContractAddress):
 
     #Caso os parametros da requisicao sejam adequados
     try:
@@ -196,7 +196,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
                     writeFile(["clientdata", "clients", "vehicles", vehicleFileName], vehicleInfo)
                     writeFile(["clientdata", "clients", "stations", stationFileName], stationInfo)
 
-                    addToBlockchain(blockchainNodeIP, blockchainNodePort, blockchainContractABI, blockchainContractAddress, "prc", purchaseID, purchaseTable)
+                    addToBlockchain(blockchainNodeIP, blockchainNodePort, blockchainAccountPrivateKey, blockchainContractABI, blockchainContractAddress, "prc", purchaseID, purchaseTable)
 
                     #Adquire uma lista com o nome dos arquivos de todas as estacoes
                     stationList = listFiles(["clientdata", "clients", "stations"])

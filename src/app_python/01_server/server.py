@@ -138,7 +138,7 @@ def clientRequestCatcher():
 
                 elif (requestName == 'bcs'):
                     
-                    attemptCharge(fileLock, senderLock, broker, mqttPort, localServerIP, timeWindow, requestID, clientAddress, requestParameters, blockChainNodeIP, blockChainNodePort, blockChainContractABI, blockChainContractAddress)
+                    attemptCharge(fileLock, senderLock, broker, mqttPort, localServerIP, timeWindow, requestID, clientAddress, requestParameters, blockChainNodeIP, blockChainNodePort, blockchainAccountPrivateKey, blockChainContractABI, blockChainContractAddress)
                     
                 elif (requestName == 'fcs'):
 
@@ -272,6 +272,9 @@ blockChainNodeIP = input("Insira o endereço IP do Cliente da Blockchain (OU PRE
 
 if (blockChainNodeIP == ""):
     blockChainNodeIP = localServerIP
+
+#Pergunta chave privada da conta
+blockchainAccountPrivateKey = input("Insira a chave privada da conta a ser utilizada para acessar a Blockchain : ")
 
 #Pergunta endereco do node da blockchain
 blockChainContractABI= input("Insira o valor ABI do contrato solidity (blockchain): ")

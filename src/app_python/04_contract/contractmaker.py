@@ -4,6 +4,7 @@ import socket
 #Importa bibliotecas adicionais
 from solcx import compile_standard, install_solc
 from web3 import Web3
+from eth_account import Account
 
 #IP do servidor, porta do broker MQTT e porta para requisicoes HTTP
 localServerIP = socket.gethostbyname(socket.gethostname())
@@ -12,7 +13,10 @@ localServerIP = socket.gethostbyname(socket.gethostname())
 blockchainNodePort = 7545
 
 #Pergunta endereco do node da blockchain
-blockchainNodeIP = input("Insira o endereço IP do Cliente da Blockchain (OU PRESSIONE ENTER para utilizar o endereço do proprio servidor): ")
+blockchainNodeIP = input("Insira o endereço IP do Cliente da Blockchain (OU PRESSIONE ENTER para utilizar o endereço da maquina local): ")
+
+#Pergunta chave privada da conta
+blockchainAccountPrivateKey = input("Insira a chave privada da conta a ser utilizada para acessar a Blockchain : ")
 
 if (blockchainNodeIP == ""):
     blockchainNodeIP = localServerIP
@@ -43,14 +47,13 @@ bytecode = compilado["contracts"]["sl.sol"]["sl"]["evm"]["bytecode"]["object"]
 
 # 5. Conectar ao blockchain
 w3 = Web3(Web3.HTTPProvider("http://" + blockchainNodeIP + ":" + str(blockchainNodePort)))
-conta = w3.eth.accounts[0]
+conta = Account.from_key(blockchainAccountPrivateKey)
 
 # 6. Implantar contrato
 Contrato = w3.eth.contract(abi=abi, bytecode=bytecode)
 tx_hash = Contrato.constructor().transact({'from': conta})
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 endereco_contrato = tx_receipt.contractAddress
-print(f"Contrato implantado em: {endereco_contrato}")
 
 # 7. Instanciar contrato
 lista = w3.eth.contract(address=endereco_contrato, abi=abi)
@@ -59,4 +62,5 @@ print("*************************************************************************
 print("CONTRATO ESTABELECIDO!")
 print("ABI: " + str(abi))
 print("ENDERECO: " + str(endereco_contrato))
+print("IP da maquina local: " + str(localServerIP))
 print("*************************************************************************")
