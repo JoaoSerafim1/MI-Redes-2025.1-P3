@@ -27,7 +27,7 @@ packaging==25.0
 paho-mqtt==2.1.0
 parsimonious==0.10.0
 propcache==0.3.1
-py-solc-x==2.0.4
+py-solc-x==0.8.0
 pycryptodome==3.23.0
 pydantic==2.11.5
 pydantic_core==2.33.2
@@ -35,6 +35,7 @@ pyunormalize==16.0.0
 regex==2024.11.6
 requests==2.32.3
 rlp==4.1.0
+semantic-version==2.10.0
 toolz==1.0.0
 types-requests==2.32.0.20250602
 typing-inspection==0.4.1
