@@ -22,7 +22,7 @@ if (blockchainNodeIP == ""):
     blockchainNodeIP = localServerIP
 
 # 1. Instalar versão do compilador Solidity
-install_solc("0.8.0")
+install_solc('0.8.0')
 
 # 2. Ler contrato
 with open("sl.sol", "r") as file:
