@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  web3client:
+    build: .
+    container_name: web3_py_client
+    volumes:
+      - .:/app
+    tty: true  # Permite manter o terminal aberto para testar manualmente

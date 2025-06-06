@@ -1,0 +1,14 @@
+FROM python:3.10-slim
+
+# Instala dependências do sistema
+RUN apt-get update && apt-get install -y curl gnupg build-essential libgmp-dev
+
+# Instala dependências Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia o restante dos arquivos
+COPY . /app
+WORKDIR /app
+
+CMD ["python3"]
