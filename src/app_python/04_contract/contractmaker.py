@@ -39,19 +39,19 @@ compilado = compile_standard({
             }
         }
     }
-}, solc_version="0.8.0")
+})
 
 # 4. Obter ABI e Bytecode
-abi = compilado["contracts"]["sl.sol"]["sl"]["abi"]
-bytecode = compilado["contracts"]["sl.sol"]["sl"]["evm"]["bytecode"]["object"]
+abi = compilado["contracts"]["sl.sol"]["ListaCodificada"]["abi"]
+bytecode = compilado["contracts"]["sl.sol"]["ListaCodificada"]["evm"]["bytecode"]["object"]
 
 # 5. Conectar ao blockchain
-w3 = Web3(Web3.HTTPProvider("http://" + blockchainNodeIP + ":" + str(blockchainNodePort)))
+w3 = Web3(Web3.HTTPProvider("http://" + str(blockchainNodeIP) + ":" + str(blockchainNodePort)))
 conta = Account.from_key(blockchainAccountPrivateKey)
 
 # 6. Implantar contrato
 Contrato = w3.eth.contract(abi=abi, bytecode=bytecode)
-tx_hash = Contrato.constructor().transact({'from': conta})
+tx_hash = Contrato.constructor().transact({'from': conta.address})
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 endereco_contrato = tx_receipt.contractAddress
 
