@@ -37,6 +37,9 @@ clientThreadCount = 1
 #Variavel de contagem dos threads de requisicoes de outros servidores
 serverThreadCount = 0
 
+#Indice de sincronizacao com a blockchain
+blockchainSyncIndex = 0
+
 #Variavel de execucao do programa
 isExecuting = True
 
@@ -233,6 +236,7 @@ def serverBlockchainSyncHandler():
     global blockchainNodeIP
     global blockchainNodePort
     global syncWindow
+    global blockchainSyncIndex
 
     lastTime = time.time() - syncWindow
 
@@ -240,11 +244,13 @@ def serverBlockchainSyncHandler():
         
         actualTime = time.time()
 
+        #Se passou o intervalo entre sincronizacoes
         if (actualTime > (lastTime + syncWindow)):
 
             lastTime = actualTime
 
-            syncWithBlockchain(fileLock, blockchainNodeIP, blockchainNodePort, blockchainContractABI, blockchainContractAddress)
+            #Inicia a sincronizacao, retornando o indice do ultimo elemento quando terminar
+            blockchainSyncIndex = syncWithBlockchain(fileLock, blockchainNodeIP, blockchainNodePort, blockchainContractABI, blockchainContractAddress, blockchainSyncIndex)
 
 
 def end(isExecutingInstance: isExecutingClass):
