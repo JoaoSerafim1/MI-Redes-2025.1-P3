@@ -10,7 +10,6 @@ import threading
 import json
 
 #Importa bibliotecas adicionais
-from solcx import compile_standard, install_solc
 from web3 import Web3
 from eth_account import Account
 
@@ -20,7 +19,6 @@ from application.util import *
 def addToBlockchain(blockchainNodeIP, blockchainNodePort, blockchainAccountPrivateKey, abi, endereco_contrato, dataType, dataLabel, infoTable):
     
     try:
-        objectToStore = [dataType, dataLabel, infoTable]
 
         # 5. Conectar ao blockchain
         w3 = Web3(Web3.HTTPProvider("http://" + blockchainNodeIP + ":" + str(blockchainNodePort)))
@@ -29,14 +27,14 @@ def addToBlockchain(blockchainNodeIP, blockchainNodePort, blockchainAccountPriva
         # 7. Instanciar contrato
         lista = w3.eth.contract(address=endereco_contrato, abi=abi)
 
-        # 8. objeto a ser gravado → JSON
-        
         #lista_de_listas = [["produto", "preco"], ["banana", "3.50"], ["laranja", "4.00"]]
-        
+
+        # 8. objeto a ser gravado → JSON
+        objectToStore = [dataType, dataLabel, infoTable]
         json_codificado = json.dumps(objectToStore)
 
         # 9. Enviar JSON para a blockchain
-        tx = lista.functions.adicionarLista(json_codificado).transact({'from': conta})
+        tx = lista.functions.adicionarLista(json_codificado).transact({'from': conta.address})
         w3.eth.wait_for_transaction_receipt(tx)
 
         #print("Lista enviada com sucesso!")
