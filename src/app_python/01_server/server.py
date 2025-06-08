@@ -46,6 +46,24 @@ isExecuting = True
 #Instancia para passagem automatica de variavel de encerramento
 isExecutingInstance = isExecutingClass()
 
+#Escreve lista vazia caso nao encontre arquivo de rotas
+if (verifyFile(["serverdata"], "routes.json") == False):
+
+    routeInfo = []
+    writeFile(["serverdata", "routes.json"], routeInfo)
+
+#Escreve 0 caso nao encontre arquivo de indice de sincronizacao da blockchain
+if (verifyFile(["serverdata"], "sync_index.json") == False):
+    
+    blockchainSyncIndex = 0
+    writeFile(["serverdata", "sync_index.json"], blockchainSyncIndex)
+
+#Caso contrario, carrega o indice
+else:
+
+    blockchainSyncIndex = readFile(["serverdata", "sync_index.json"])
+
+
 #Funcao para cada thread que espera uma requisicao de um cliente
 def clientRequestCatcher():
 

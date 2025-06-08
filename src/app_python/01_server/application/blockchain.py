@@ -104,6 +104,11 @@ def syncWithBlockchain (fileLock: threading.Lock, blockchainNodeIP, blockchainNo
         #Atualiza o indice de elemento da blockchain
         blockchainSyncIndex = chainSize
 
+        #Guarda a informacao no arquivo
+        fileLock.acquire()
+        writeFile(["serverdata", "sync_index.json"], blockchainSyncIndex)
+        fileLock.release()
+
         #Retorna o indice do elemento da blockchain
         return blockchainSyncIndex
     
