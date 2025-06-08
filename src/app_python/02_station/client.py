@@ -330,7 +330,7 @@ while True:
     bookedVehicleInfo = station.getBookedVehicle()
 
     #Caso tenha
-    if (len(bookedVehicleInfo[0]) == 24):
+    if (len(bookedVehicleInfo[0]) == 67):
         
         station.actualVehicleID = bookedVehicleInfo[0]
         station.remainingCharge = bookedVehicleInfo[1]
