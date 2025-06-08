@@ -10,6 +10,7 @@ import threading
 import datetime
 import string
 import random
+import hashlib
 
 #Importa as bibliotecas customizadas da aplicacao
 from application.lib.db import *
@@ -21,6 +22,7 @@ fileLock = threading.Lock()
 def getRandomID(fileLock: threading.Lock, randomID):
 
     lettersanddigits = string.ascii_uppercase + string.digits
+    hashHandler = hashlib.sha256()
 
     #Loop para gerar IDs ate satisfazer certas condicoes
     while True:
@@ -31,8 +33,12 @@ def getRandomID(fileLock: threading.Lock, randomID):
         for count in range(0,24):
             newRandomID += random.choice(lettersanddigits)
 
+        #Faz o hash e concatena header para achar o ID padronizado em hash
+        hashHandler.update(newRandomID.encode())
+        newRandomHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
         #Concatena com ".json" para saber qual e o nome do arquivo a ser analisado
-        completeFileName = (newRandomID + ".json")
+        completeFileName = (newRandomHashedID + ".json")
         
         stationVerify = False
         vehicleVerify = False

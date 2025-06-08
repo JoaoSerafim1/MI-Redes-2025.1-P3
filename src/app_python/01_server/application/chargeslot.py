@@ -37,12 +37,12 @@ def getNearestAvailableStationInfo(fileLock: threading.Lock, senderLock: threadi
         #Nome 
         actualStationFileName = stationList[stationIndex]
 
-        if ((len(actualStationFileName) == 29)):
+        if ((len(actualStationFileName) == 72)):
 
             actualID = ""
             
             #Acha o ID da estacao a retornar
-            for IDIndex in range(0, 24):
+            for IDIndex in range(0, 67):
                     
                 actualID += actualStationFileName[IDIndex]
 
@@ -121,8 +121,13 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
         stationID = requestParameters[2]
         paidAmmount = requestParameters[3]
 
+        #Acao executada pelo veiculo, portanto e esperado que o ID seja fornecido em seu formato original
+        hashHandler = hashlib.sha256()
+        hashHandler.update(vehicleID.encode())
+        vehicleHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
         #Nome do arquivo do veiculo de carga a ser analizado
-        vehicleFileName = (vehicleID + ".json")
+        vehicleFileName = (vehicleHashedID + ".json")
         #Nome do arquivo da estacao de carga a ser analizado
         stationFileName = (stationID + ".json")
 
@@ -133,7 +138,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
         fileLock.release()
 
         #Caso o ID do veiculo/estacao fornecidos sejam validos e a compra seja confirmada
-        if ((stationVerify == True) and (len(stationID) == 24) and (len(vehicleID) == 24) and confirmPurchase(purchaseID) == True):
+        if ((stationVerify == True) and (len(stationID) == 67) and (len(vehicleHashedID) == 67) and confirmPurchase(purchaseID) == True):
             
             zeroBookingConflicts = True
             purchaseDone = False
@@ -153,7 +158,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
                     bookedTime = stationInfo["vehicle_bookings"][actualBookedVehicleID]
 
                     #Se a entrada na agenda nao for do veiculo solicitante e a janela de tempo do agendamento (2 horas antes e depois do horario exato marcado) contemplar o tempo atual, nao podera haver recarga
-                    if ((zeroBookingConflicts == True) and (vehicleID != actualBookedVehicleID and (actualTime > (bookedTime - timeWindow))) and (actualTime < (bookedTime + timeWindow))):
+                    if ((zeroBookingConflicts == True) and (vehicleHashedID != actualBookedVehicleID and (actualTime > (bookedTime - timeWindow))) and (actualTime < (bookedTime + timeWindow))):
                         
                         zeroBookingConflicts = False
 
@@ -167,7 +172,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
 
                     #Cria um dicionario das informacoes da compra, adiciona informacoes e grava um arquivo
                     purchaseTable = {}
-                    purchaseTable["vehicle_ID"] = vehicleID
+                    purchaseTable["vehicle_ID"] = vehicleHashedID
                     purchaseTable["station_ID"] = stationID
                     purchaseTable["total"] = paidAmmount
                     purchaseTable["unitary_price"] = stationInfo["unitary_price"]
@@ -188,7 +193,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
                     vehicleInfo["purchases"].append(purchaseID)
 
                     #Modifica o veiculo atual na estacao de carga e grava o resultado
-                    stationInfo["actual_vehicle"] = vehicleID
+                    stationInfo["actual_vehicle"] = vehicleHashedID
                     stationInfo["remaining_charge"] = chargeAmount
 
                     #Grava o resultado das acoes
@@ -215,7 +220,7 @@ def attemptCharge(fileLock: threading.Lock, senderLock: threading.Lock, broker, 
                             try:
                                 
                                 #Tenta remover a entrada com o ID do veiculo solicitante da lista de agendamento, pois o mesmo acabou de iniciar o processo de recarga
-                                del actualStationTable["vehicle_bookings"][vehicleID]
+                                del actualStationTable["vehicle_bookings"][vehicleHashedID]
                                 
                                 #Grava o resultado da acao
                                 writeFile(["clientdata", "clients", "stations", actualStationFileName], actualStationTable)
@@ -280,8 +285,13 @@ def freeChargingStation(fileLock: threading.Lock, senderLock: threading.Lock, br
         #...Recupera o ID da estacao
         stationID = requestParameters[0]
 
+        #Acao executada pela estacao, portanto e esperado que o ID seja fornecido em seu formato original
+        hashHandler = hashlib.sha256()
+        hashHandler.update(stationID.encode())
+        stationHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
         #Concatena o nome do arquivo/
-        fileName = (stationID + ".json")
+        fileName = (stationHashedID + ".json")
 
         fileLock.acquire()
 
@@ -289,7 +299,7 @@ def freeChargingStation(fileLock: threading.Lock, senderLock: threading.Lock, br
         stationVerify = verifyFile(["clientdata", "clients", "stations"], fileName)
 
         #Caso o ID da estacao seja valido
-        if((stationVerify == True) and (len(stationID) == 24)):
+        if((stationVerify == True) and (len(stationHashedID) == 67)):
             
             #Recupera informacoes da estacao de carga
             stationInfo = readFile(["clientdata", "clients", "stations", fileName])
@@ -310,7 +320,7 @@ def freeChargingStation(fileLock: threading.Lock, senderLock: threading.Lock, br
             registerRequestResult(fileLock, stationAddress, requestID, 'OK')
 
             #Registra no log
-            registerLogEntry(fileLock, ["logs", "performed"], "FREESPOT", "S_ID", stationID)
+            registerLogEntry(fileLock, ["logs", "performed"], "FREESPOT", "S_ID", stationHashedID)
             
             #Responde o status da requisicao para o cliente
             sendResponse(senderLock, broker, port, serverIP, stationAddress, 'OK')

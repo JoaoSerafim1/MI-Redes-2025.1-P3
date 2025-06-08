@@ -72,7 +72,7 @@ def respondWithRoute(fileLock: threading.Lock, senderLock: threading.Lock, broke
 
             routeIndex = int(routeIndex)
             
-            #Le o arquivo do veiculo com o ID especificado
+            #Le o arquivo de informacoes de rotas
             fileLock.acquire()
             routeInfo = readFile(["serverdata", "routes.json"])
             fileLock.release()
@@ -142,6 +142,11 @@ def reserveRoute(fileLock: threading.Lock, senderLock: threading.Lock, broker, p
         vehicleAutonomy = float(requestParameters[3])
         coordX = float(requestParameters[4])
         coordY = float(requestParameters[5])
+
+        #Acao executada pelo veiculo, portanto e esperado que o ID seja fornecido em seu formato original
+        hashHandler = hashlib.sha256()
+        hashHandler.update(vehicleID.encode())
+        vehicleHashedID = ("ID-" + str(hashHandler.hexdigest()))
         
         #Le o arquivo de informacoes de rotas
         fileLock.acquire()
@@ -164,7 +169,7 @@ def reserveRoute(fileLock: threading.Lock, senderLock: threading.Lock, broker, p
                 chosenNodeReservationTime = float(reservationTimeList[nodeIndex])
                 
                 #Parametros da requisicao a ser enviada ao servidor do no atual (ID do veiculo e o horario desejado)
-                serverRequestParameters = [str(vehicleID), chosenNodeReservationTime, vehicleAutonomy, coordX, coordY]
+                serverRequestParameters = [str(vehicleHashedID), chosenNodeReservationTime, vehicleAutonomy, coordX, coordY]
 
                 payload = [str("drr"), serverRequestParameters]
                 
@@ -198,7 +203,7 @@ def reserveRoute(fileLock: threading.Lock, senderLock: threading.Lock, broker, p
                     chosenRouteNodeAddress = chosenRoute[nodeIndex][0]
 
                     #Parametros da requisicao a ser enviada ao servidor do no atual (ID do veiculo)
-                    serverRequestParameters = [str(vehicleID)]
+                    serverRequestParameters = [str(vehicleHashedID)]
 
                     payload = [str("urr"), serverRequestParameters]
                     
@@ -236,6 +241,11 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
     coordX = float(requestParameters[3])
     coordY = float(requestParameters[4])
 
+    #Acao executada pelo veiculo, portanto e esperado que o ID seja fornecido em seu formato original
+    hashHandler = hashlib.sha256()
+    hashHandler.update(vehicleID.encode())
+    vehicleHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
     fileLock.acquire()
 
     #Adquire uma lista com o nome dos arquivos de todas as estacoes
@@ -252,12 +262,12 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
         actualStationFileName = stationList[stationIndex]
 
         #Exclui arquivos invalidos (ex: .gitignore)
-        if ((len(actualStationFileName) == 29)):
+        if ((len(actualStationFileName) == 72)):
             
             actualID = ""
             
             #Acha o ID da estacao a retornar
-            for IDIndex in range(0, 24):
+            for IDIndex in range(0, 67):
                 
                 actualID += actualStationFileName[IDIndex]
 
@@ -287,7 +297,7 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
                     bookedTime = actualStationTable["vehicle_bookings"][actualBookedVehicleID]
 
                     #Se a entrada na agenda nao for do veiculo solicitante e a janela de tempo do agendamento (2 horas antes e depois do horario exato marcado) contemplar o tempo atual, nao podera haver recarga
-                    if ((zeroBookingConflicts == True) and (vehicleID != actualBookedVehicleID) and (reservationTime > (bookedTime - timeWindow)) and (reservationTime < (bookedTime + timeWindow))):
+                    if ((zeroBookingConflicts == True) and (vehicleHashedID != actualBookedVehicleID) and (reservationTime > (bookedTime - timeWindow)) and (reservationTime < (bookedTime + timeWindow))):
                         
                         zeroBookingConflicts = False
                 
@@ -312,8 +322,8 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
     
     clientVerify = False
 
-    #Se os clientes possuem ID de 24 de tamanho, significa que ambas sao validos e o agendamento pode ocorrer
-    if ((len(stationID) == 24) and (len(vehicleID) == 24)):
+    #Se os clientes possuem ID de 67 de tamanho, significa que ambas sao validos e o agendamento pode ocorrer
+    if ((len(stationID) == 67) and (len(vehicleHashedID) == 67)):
         
         clientVerify = True
 
@@ -334,7 +344,7 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
                 actualStationTable = readFile(["clientdata", "clients", "stations", actualStationFileName])
 
                 #Tenta remover a entrada com o ID do veiculo solicitante da lista de agendamento
-                del actualStationTable["vehicle_bookings"][vehicleID]
+                del actualStationTable["vehicle_bookings"][vehicleHashedID]
 
                 #Grava o resultado da acao
                 writeFile(["clientdata", "clients", "stations", actualStationFileName], actualStationTable)
@@ -348,7 +358,7 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
         stationInfo = readFile(["clientdata", "clients", "stations", stationFileName])
 
         #Escreve a informacao da reserva
-        stationInfo["vehicle_bookings"][vehicleID] = reservationTime
+        stationInfo["vehicle_bookings"][vehicleHashedID] = reservationTime
 
         #Guardas as informacoes
         writeFile(["clientdata", "clients", "stations", stationFileName], stationInfo)
@@ -361,6 +371,11 @@ def doReservation(fileLock: threading.Lock, timeWindow, requestParameters):
 def undoReservation(fileLock: threading.Lock, requestParameters):
 
     vehicleID = requestParameters[0]
+
+    #Acao executada pelo veiculo, portanto e esperado que o ID seja fornecido em seu formato original
+    hashHandler = hashlib.sha256()
+    hashHandler.update(vehicleID.encode())
+    vehicleHashedID = ("ID-" + str(hashHandler.hexdigest()))
     
     fileLock.acquire()
     
@@ -379,7 +394,7 @@ def undoReservation(fileLock: threading.Lock, requestParameters):
             actualStationTable = readFile(["clientdata", "clients", "stations", actualStationFileName])
             
             #Tenta remover a entrada com o ID do veiculo solicitante da lista de agendamento
-            del actualStationTable["vehicle_bookings"][vehicleID]
+            del actualStationTable["vehicle_bookings"][vehicleHashedID]
             
             #Grava o resultado da acao
             writeFile(["clientdata", "clients", "stations", actualStationFileName], actualStationTable)

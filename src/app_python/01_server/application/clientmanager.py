@@ -62,13 +62,17 @@ def registerChargeStation(randomID, senderLock: threading.Lock, broker, port, se
         while True:
 
             newRandomID = ""
-
+            hashHandler = hashlib.sha256()
+            
             #Concatena os os digitos ou letras aleatorios para um novo ID
-            for count in range(0,24):
+            for count in range(0, 24):
                 newRandomID += random.choice(lettersanddigits)
 
+            hashHandler.update(newRandomID.encode())
+            newRandomHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
             #Concatena com ".json" para saber qual e o nome do arquivo a ser analisado
-            completeFileName = (newRandomID + ".json")
+            completeFileName = (newRandomHashedID + ".json")
             
             stationVerify = False
             vehicleVerify = False
@@ -99,6 +103,11 @@ def registerChargeStation(randomID, senderLock: threading.Lock, broker, port, se
         #Caso o ID da estacao fornecido seja igual ao ID aleatorio atual esperado
         if (stationID == randomID):
 
+            #Acao executada pela estacao, portanto e esperado que o ID seja fornecido em seu formato original
+            hashHandler = hashlib.sha256()
+            hashHandler.update(randomID.encode())
+            newRandomHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
             #Cria o dicionario das informacoes e preenche com as informacoes passadas como parametros da requisicao e com o tempo atual desde do EPOCH
             stationInfo = {}
             stationInfo["coord_x"] = requestParameters[1]
@@ -110,7 +119,7 @@ def registerChargeStation(randomID, senderLock: threading.Lock, broker, port, se
             stationInfo["last_online"] = str(time.time())
             
             #Concatena o nome do arquivo/
-            fileName = (randomID + ".json")
+            fileName = (newRandomHashedID + ".json")
 
             writeFile(["clientdata", "clients", "stations", fileName], stationInfo)
             
@@ -118,7 +127,7 @@ def registerChargeStation(randomID, senderLock: threading.Lock, broker, port, se
             registerRequestResultLocal(stationAddress, requestID, 'OK')
 
             #Registra no log
-            registerLogEntryLocal(["logs", "performed"], "RGTSTATION", "S_ID", stationID)
+            registerLogEntryLocal(["logs", "performed"], "RGTSTATION", "S_ID", newRandomHashedID)
 
             #Gera um novo ID aleatorio e exibe mensagem para conhecimento do mesmo
             randomID = getRandomIDLocal(randomID)
@@ -166,8 +175,13 @@ def registerVehicle(fileLock: threading.Lock, randomIDLock: threading.Lock, rand
     #Obtem um ID aleatorio para o veiculo
     vehicleRandomID = getRandomID(fileLock, randomID)
 
+    #Acao de criacao de veiculo, ID em formato original precisa ser convertido em hash-ID
+    hashHandler = hashlib.sha256()
+    hashHandler.update(vehicleRandomID.encode())
+    newRandomHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
     #Concatena a string do nome do arquivo do veiculo
-    vehicleFileName = (vehicleRandomID + ".json")
+    vehicleFileName = (newRandomHashedID + ".json")
 
     #Cria um novo arquivo para o veiculo
     fileLock.acquire()
@@ -194,8 +208,13 @@ def getBookedVehicle(fileLock: threading.Lock, senderLock: threading.Lock, broke
         #...Recupera o ID da estacao
         stationID = requestParameters[0]
 
+        #Acao executada pela estacao, portanto e esperado que o ID seja fornecido em seu formato original
+        hashHandler = hashlib.sha256()
+        hashHandler.update(stationID.encode())
+        stationHashedID = ("ID-" + str(hashHandler.hexdigest()))
+
         #Concatena o nome do arquivo/
-        fileName = (stationID + ".json")
+        fileName = (stationHashedID + ".json")
 
         #Verifica se existe a estacao de carga com o ID fornecido (por meio de verificacao do arquivo de nome exato)
         fileLock.acquire()
@@ -203,7 +222,7 @@ def getBookedVehicle(fileLock: threading.Lock, senderLock: threading.Lock, broke
         fileLock.release()
 
         #Caso o ID da estacao seja valido
-        if((stationVerify == True) and (len(stationID) == 24)):
+        if((stationVerify == True) and (len(stationHashedID) == 67)):
 
             #Obtem o tempo atual, para marcar como online
             lastOnline = str(time.time())
@@ -229,7 +248,7 @@ def getBookedVehicle(fileLock: threading.Lock, senderLock: threading.Lock, broke
             registerRequestResult(fileLock, stationAddress, requestID, [bookedVehicle, remainingCharge])
 
             #Registra no log
-            registerLogEntry(fileLock, ["logs", "performed"], "GETBOOKED", "S_ID", stationID)
+            registerLogEntry(fileLock, ["logs", "performed"], "GETBOOKED", "S_ID", stationHashedID)
             
             #Responde o status da requisicao para o cliente
             sendResponse(senderLock, broker, port, serverIP, stationAddress, [bookedVehicle, remainingCharge])
@@ -264,7 +283,7 @@ def respondWithPurchase(fileLock: threading.Lock, senderLock: threading.Lock, br
         fileLock.release()
 
         #Se existe veiculo valido no ID e o indice e numerico
-        if((purchaseIndex.isnumeric() == True) and (verifyVehicle == True) and (len(vehicleFileName) == 29)):
+        if((purchaseIndex.isnumeric() == True) and (verifyVehicle == True) and (len(vehicleFileName) == 72)):
             
             #Le o arquivo do veiculo com o ID especificado
             fileLock.acquire()
