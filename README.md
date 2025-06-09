@@ -379,6 +379,8 @@ O arquivo `data_randomizer.py` encontrado no diretório de desenvolvimento `/src
   - [_Is it possible to use docker without sudo?_](https://askubuntu.com/questions/1165877/is-it-possible-to-use-docker-without-sudo)
   - [_can i install customtkinter on linux_](https://www.reddit.com/r/Tkinter/comments/15sqnvx/can_i_install_customtkinter_on_linux/)
   - [_docker \_tkinter.TclError: couldn't connect to display_](https://stackoverflow.com/questions/49169055/docker-tkinter-tclerror-couldnt-connect-to-display/49229627#49229627)
+- **Ajuda geral da biblioteca web3 para Python**:
+  - [_Troubleshooting_](https://web3py.readthedocs.io/en/stable/troubleshooting.html)
 - **Tutoriais e documentação de programação**:
   - [_Docker Containers: IPC using Sockets — Part 2_](https://medium.com/techanic/docker-containers-ipc-using-sockets-part-2-834e8ea00768)
   - [_How to get bash or ssh into a running container in background mode?_](https://askubuntu.com/questions/505506/how-to-get-bash-or-ssh-into-a-running-container-in-background-mode/543057#543057)
@@ -392,10 +394,11 @@ O arquivo `data_randomizer.py` encontrado no diretório de desenvolvimento `/src
   - [_New Top Level Windows - Tkinter CustomTkinter 15_](https://www.youtube.com/watch?v=FyPOqu3akDw)
   - [_Ganache: Installation and Usage with Python_](https://blog.agilephd.com/posts/ganache/)
   - [_Solidity Example: Yacht Rental Smart Contract_](https://blog.agilephd.com/posts/smart_contract_solidity/)
-  - 
+  - [_Decentralized Application (dApp): An Example using Python_](https://blog.agilephd.com/posts/dapp_python_example/)
+  - [_Hashing in Python: Using Hashlib Library for Secure Hashing_](https://www.youtube.com/watch?v=i-h0CtKde6w)
 ## Aplicativos de teste
-- **Clientes de protocolo de rede:**
+- **Clientes de protocolo de rede**:
   - [Mosquitto Eclipse](https://mosquitto.org/)
   - [Insomnia](https://insomnia.rest/)
-- **Simulador de Rede Ethereum:**
+- **Simulador de Rede Ethereum**:
   - [Ganache](https://archive.trufflesuite.com/ganache/)
