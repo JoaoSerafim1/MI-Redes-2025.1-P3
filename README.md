@@ -396,5 +396,5 @@ O arquivo `data_randomizer.py` encontrado no diretório de desenvolvimento `/src
 - **Clientes de protocolo de rede**:
   - [Mosquitto Eclipse](https://mosquitto.org/)
   - [Insomnia](https://insomnia.rest/)
-- **Simulador de Rede Ethereum**:
+- **Simulador de blockchain tipo Ethereum**:
   - [Ganache](https://archive.trufflesuite.com/ganache/)
