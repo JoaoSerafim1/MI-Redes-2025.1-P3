@@ -352,6 +352,9 @@ bash dockerscript.sh scrap
 ## Imagem Docker
 [python-redes-image.tar - Google Drive](https://drive.google.com/file/d/1yu0YU4HwyEMYXltb9l4f3w7dYQ2QfauG/view?usp=sharing)
 
+## Anaconda - gerenciador de ambientes virtuais para Python
+[_Installing Anaconda Distribution_]()
+
 ## Comandos e Argumentos Especiais
 
 ### Broker MQTT de Teste
@@ -387,7 +390,12 @@ O arquivo `data_randomizer.py` encontrado no diretório de desenvolvimento `/src
   - [_Requests: HTTP for Humans™_](https://requests.readthedocs.io/en/latest/)
   - [_Entry Widgets in CustomTkinter - Tkinter CustomTkinter 3_](https://www.youtube.com/watch?v=mwalgzuEfvw)
   - [_New Top Level Windows - Tkinter CustomTkinter 15_](https://www.youtube.com/watch?v=FyPOqu3akDw)
+  - [_Ganache: Installation and Usage with Python_](https://blog.agilephd.com/posts/ganache/)
+  - [_Solidity Example: Yacht Rental Smart Contract_](https://blog.agilephd.com/posts/smart_contract_solidity/)
+  - 
 ## Aplicativos de teste
 - **Clientes de protocolo de rede:**
   - [Mosquitto Eclipse](https://mosquitto.org/)
   - [Insomnia](https://insomnia.rest/)
+- **Simulador de Rede Ethereum:**
+  - [Ganache](https://archive.trufflesuite.com/ganache/)
