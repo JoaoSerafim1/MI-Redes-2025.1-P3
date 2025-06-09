@@ -238,50 +238,35 @@ bash dockerscript.sh ACAO SUBPARAMETRO
 
 ### Utilize os comandos no terminal Linux executado no diretório `src/` da aplicação e como descrito acima, sendo `ACAO` um paramêtro obrigatório para todas as ações, enquanto que `SUBPARAMETRO` so é utilizado em uma destas.
 
-### BUILD  compila a imagem e cria a rede necessária. Note que a imagem docker segundo o arquivo Dockerfile contém todos os recursos possivelmente utlizados em um ambiente de produção, incluindo um broker MQTT (Mosquitto Eclipse)
-
-- Formato fixo:
-```console
-bash dockerscript.sh build
-```
-#### AVISO: Devido à natureza de mudança na versão mais recente e de possível indisponibilidade de versões específicas de aplicações, plugins e APIs, é recomendado ao usuário carregar uma versão da imagem já compilada pelo comando `loadimage`, como descrito abaixo, ao invés de compilar sua própria imagem com o comando `build`. Um link do Google Drive contendo uma imagem pré-compilada e testada está incluso no fim deste documento README.md, sessão "Ferramentas de Desenvolvimento Adicionais".
-
-### SAVEIMAGE  salva a versão mais recente da imagem local no arquivo python-redes-image.tar.
-
-- Formato fixo:
-```console
-bash dockerscript.sh saveimage
-```
-
-### LOADIMAGE carrega uma imagem a partir do arquivo de nome `python-redes-image.tar`, o qual foi anterioromente salvo pelo comando ```saveimage``` ou baixado e colocado no diretório de desenvolvimento `/src/` (ou seja, juntamente com o arquivo de script).
+### > LOADIMAGE carrega uma imagem a partir do arquivo de nome `python-redes-image.tar`, o qual foi baixado e colocado no diretório de desenvolvimento `/src/` (ou seja, juntamente com o arquivo de script), ou ainda, anterioromente salvo pelo comando ```saveimage``` (não recomendado). Também cria a rede necessária para testes.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh loadimage
 ```
 
-### RUN instancia os containers para as diferentes versões da aplicação (4 de servidor, 10 de estações e 4 de veículos). Vale lembrar que este comando também resulta na configuração de brokers MQTT Mosquitto Eclipse para funcionar perfeitamente dentro de cada container de servidor.
+### > RUN instancia os containers para as diferentes versões da aplicação (4 de servidor, 10 de estações e 4 de veículos). Vale lembrar que este comando também resulta na configuração de brokers MQTT Mosquitto Eclipse para funcionar perfeitamente dentro de cada container de servidor.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh run
 ```
 
-### STOP apaga os containers instanciados.
+### > STOP apaga os containers instanciados.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh stop
 ```
 
-### UPDATE copia os varios arquivos da aplicação para os containers em execução. Pode e deve ser utilizado toda vez que houver alguma mudança nos arquivos da própria aplicacão (para atualizar os arquivos gerados durante a execução da aplicação, utilize o comando `export` como descrito mais abaixo).
+### > UPDATE copia os varios arquivos da aplicação para os containers em execução. Pode e deve ser utilizado toda vez que houver alguma mudança nos arquivos da própria aplicacão (para atualizar os arquivos gerados durante a execução da aplicação, utilize o comando `export` como descrito mais abaixo).
 
 - Formato fixo:
 ```console
 bash dockerscript.sh update
 ```
 
-### CONTROL Assume o controle do terminal do container especificado no parâmetro `SUBPARAMETRO`, sendo sv01-sv04 referente a cada um dos quatro containers do servidores, cs01-cs10 referente a cada um dos dez containers das estações, e ev01-ev04 referente a cada um dos dos quatro containers dos veículos.
+### > CONTROL Assume o controle do terminal do container especificado no parâmetro `SUBPARAMETRO`, sendo sv01-sv04 referente a cada um dos quatro containers do servidores, cs01-cs10 referente a cada um dos dez containers das estações, e ev01-ev04 referente a cada um dos dos quatro containers dos veículos.
 
 - Exemplo:
 ```console
@@ -297,7 +282,7 @@ xhost +
 ```
 ##### (Habilita a visualização remota de elementos gráficos, deve ser executado sempre que o sistema operacional sofrer reinicialização.)
 
-### TESTDUMP Copia os varios arquivos de testes encontrados em `src/test_files` para os containers em execução.
+### > TESTDUMP Copia os varios arquivos de testes encontrados em `src/test_files` para os containers em execução.
 
 - Formato fixo:
 ```console
@@ -305,14 +290,14 @@ bash dockerscript.sh testdump
 ```
 #### AVISO: As rotas de teste possuem endereço IP que muito provavelmente não corresponderão a endereços observados por todos os desenvolvedores. Cabe a cada desenvolvedor mudar os IPs para corresponder àqueles utilizados pelos containers dos servidores, os quais podem ser vistos ao executar a aplicação de cada servidor, e lembrando que nenhum servidor deverá ter seu próprio IP como parte de um nó de qualquer rota.
 
-### IMPORT Copia os arquivos e/ou diretórios gerados pelas aplicações em execução nos containers para a pasta `/src/files/imported`.
+### > IMPORT Copia os arquivos e/ou diretórios gerados pelas aplicações em execução nos containers para a pasta `/src/files/imported`.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh import
 ```
 
-### EXPORT Copia os arquivos da pasta `/src/files/export` para suas respectivas pastas em seus respectivos containers, de acordo com a organização dentro da própria pasta `/src/files/export`.
+### > EXPORT Copia os arquivos da pasta `/src/files/export` para suas respectivas pastas em seus respectivos containers, de acordo com a organização dentro da própria pasta `/src/files/export`.
 Para re-inserir arquivos modificados nos containers, certifique-se de que a hierarquia em `/files/export` é a mesma encontrada em `/files/imported`, ou seja, tal como encontrado após o processo de importação.
 
 - Formato fixo:
@@ -320,25 +305,40 @@ Para re-inserir arquivos modificados nos containers, certifique-se de que a hier
 bash dockerscript.sh export
 ```
 
-### CLEARIMPORTED Apaga todos os arquivos atualmente presentes nas várias pastas contidas em `/src/files/imported`.
+### > CLEARIMPORTED Apaga todos os arquivos atualmente presentes nas várias pastas contidas em `/src/files/imported`.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh clearimported
 ```
 
-### CLEAREXPORT Apaga todos os arquivos atualmente presentes nas várias pastas contidas em `/src/files/export`.
+### > CLEAREXPORT Apaga todos os arquivos atualmente presentes nas várias pastas contidas em `/src/files/export`.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh clearexport
 ```
 
-### SCRAP Apaga todos os containers, redes e imagens criadas pelas ações `build` e `run`.
+### > SCRAP Apaga todos os containers, redes e imagens criadas pelas ações `build` e `run`.
 
 - Formato fixo:
 ```console
 bash dockerscript.sh scrap
+```
+
+### > BUILD  compila a imagem e cria a rede necessária para testes. Note que a imagem docker segundo o arquivo Dockerfile contém todos os recursos possivelmente utlizados em um ambiente de produção, incluindo um broker MQTT (Mosquitto Eclipse)
+
+- Formato fixo:
+```console
+bash dockerscript.sh build
+```
+#### AVISO: Devido à natureza de mudança na versão mais recente e de possível indisponibilidade de versões específicas de aplicações, plugins e APIs, é recomendado ao usuário carregar uma versão da imagem já compilada e testada, como já descrito anteriormente, ao invés de compilar sua própria imagem com o comando `build`. Um link do Google Drive contendo uma imagem pré-compilada e testada está incluso no fim deste documento README.md, sessão "Ferramentas de Desenvolvimento Adicionais".
+
+### > SAVEIMAGE  salva a versão mais recente da imagem local no arquivo python-redes-image.tar.
+
+- Formato fixo:
+```console
+bash dockerscript.sh saveimage
 ```
 
 ### NOTA: O kit de desenvolvimento inclui um arquivo DOS-batch (dockerscript.bat) com comandos idênticos, exceto aqueles relacionados a interfaces gráficas, os quais estão totalmente ausentes.
