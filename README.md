@@ -1,11 +1,12 @@
-# Sistemas distribuídos - Recarga de Veículos Elétricos com protocolo MQTT e HTTP-REST
+# Sistemas distribuídos - Recarga de Veículos Elétricos com protocolos de comunicação MQTT-ZMQ / HTTP-REST e uso de blockchain tipo Ethereum.
 
 Chamamos sistemas distribuídos aqueles compostos por várias instâncias individuais de aplicação, costumeiramente de dois ou mais tipos distintos, que trabalham em conjunto para prover um serviço em massa.
 
 No contexto do MI de Concorrência e Conectividade da UEFS, semestre 2025.1, foi requisitado aos alunos a confecção de um sistema distribuído capaz de coordenar a recarga de veículos elétricos, além de monitorar o nível de carga dos veículos no qual a versão de usuário final está instanciada, e fornecer informações acerca do histórico de compras (recargas) de um usuário final.
 
-O sistema aqui desenvolvido conta com 3 versões, cada uma destinada a ser executada por um agente distinto:
-- Servidor: Aplicação pertencente aos provedores do serviço. Recebe requisicões das aplicações-cliente (veículo/usuário final e estação de recarga) e de outros servidores, validando, executando e registrando tão requisições.
+O sistema aqui desenvolvido conta com 4 versões, cada uma destinada a ser executada por um agente distinto:
+- Estabelecimento de contrato: É encontrado aqui o arquivo solidity que descreve o contrato para interação com a blockchain tipo Ethereum, além de uma aplicação Python que é capaz de instanciar e firmar tal contrato. A ação de firmar um contrato só deve ser executada uma vez por instância de todo o sistema.
+- Servidor: Aplicação pertencente aos provedores do serviço. Recebe requisicões das aplicações-cliente (veículo/usuário final e estação de recarga) e de outros servidores, validando, executando e registrando tão requisições. Também faz sincronização por meio de uso de blockchain tipo Ethereum.
 - Estação de recarga: Software instalado em computadores de cada ponto de recarga. Rotineiramente "pergunta" ao servidor se existe veículo a ser recarregado, caso disponível.
 - Veículo (usuário final): Programa responsável por prover a um motorista de automóvel a opção de requisitar serviços de recarga por meio de pagamento, reservar pontos em horários desejado e visualizar compras bem-sucedidas registradas em um determinado servidor. Como dito anteriormente, também monitora o nível de carga do veículo no qual é instalado.
 
@@ -15,17 +16,19 @@ O sistema aqui desenvolvido conta com 3 versões, cada uma destinada a ser execu
 
 [2. Comunicação por protocolo HTTP-REST e MQTT](#Comunicação-por-protocolo-HTTP-REST-e-MQTT)
 
-[3. Desenvolvimento com uso de containers por meio de Docker Engine](#Desenvolvimento-com-uso-de-containers-por-meio-de-Docker-Engine)
+[3. Sincronização com uso de blockchain tipo Ethereum](#Sincronização-com-uso-de-blockchain-tipo-Ethereum)
 
-[4. Ferramentas de Densenvolvimento Adicionais](#Ferramentas-de-Densenvolvimento-Adicionais)
+[4. Desenvolvimento com uso de containers por meio de Docker Engine](#Desenvolvimento-com-uso-de-containers-por-meio-de-Docker-Engine)
 
-[5. Bibliografia](#Bibliografia)
+[5. Ferramentas de Densenvolvimento Adicionais](#Ferramentas-de-Densenvolvimento-Adicionais)
+
+[6. Bibliografia](#Bibliografia)
   
 # Instalação e uso da aplicação
 
 ## Requisitos básicos
-- Sistema operacional compatível com protocolo TCP-IP e Python (ex: [Ubuntu](https://ubuntu.com/download), [Windows](https://www.microsoft.com/pt-br/windows/))
-- [Python](https://www.python.org/downloads/) 3.9
+- Sistema operacional compatível com protocolo TCP-IP e Python (ex: [Ubuntu](https://ubuntu.com/download), [Windows](https://www.microsoft.com/pt-br/windows/)).
+- [Python](https://www.python.org/downloads/) 3.9 (recomendado: gerenciador de ambientes virtuais [Anaconda](https://www.anaconda.com/download)).
 - [Biblioteca paho-mqtt](https://pypi.org/project/paho-mqtt/) para Python:
 
   ```
@@ -40,18 +43,51 @@ O sistema aqui desenvolvido conta com 3 versões, cada uma destinada a ser execu
 
 As versões do sistema destinadas a usuários distintos estão disponíveis individualmente neste repositório online, em formato .zip, na sessão "Releases" (encontrada no canto direito da tela inicial do repositório na maioria dos navegadores).
 
-### ☁️ Servidor
-#### AVISO: O servidor faz uso da [biblioteca requests](https://pypi.org/project/requests/) do Python para a comunicação com outros servidores. Tal biblioteca não faz parte do pacote básico da linguagem.
+Cada versão do sistema distribuído possui seus requerimentos em termos de bibliotecas Python contidos em arquivos `requirements.txt`, estando esses nos diretórios principais das aplicações.
 ```
-  pip3 install requests --break-system-packages
+  pip install -r requirements.txt
 ```
-##### (Instala, DE FORMA FORÇADA, a biblioteca em sistemas tipo Linux, consulte documentação do componente para fazer o mesmo em outros sistemas operacionais)
+OU
+```
+  pip3 install -r requirements.txt
+```
+##### (Instala as bibliotecas em sistemas tipo Linux e segundo o arquivo `requirements.txt`.
 
-O arquivo .zip do servidor possui ```server``` antes de seu número de versão. Para iniciar o programa do servidor, execute o arquivo ```server.py```, encontrado no diretório principal da aplicação. Após a inicialização, será pedido au usuário do sistema que insira um endereço para o broker MQTT, sempre na porta TCP 1883. Caso deseje usar um broker MQTT que está rodando com o mesmo endereço do servidor, também na porta TCP 1883, pressione ENTER sem prover entrada alguma.
+Note que a instalação de bibliotecas Python é por padrão impedida fora de ambientes virtuais, visto o risco de conflitos com a versão mais nova do Python (possivelmente utilizada pelo sistema operacional e/ou outras aplicações) que tal ação pode gerar. Caso deseje, de fato, forçar a instalação das bibliotecas fora de um ambiente virtual, adicione o argumento `--break-system-packages` ao comando de instalação.
+```
+  pip install -r requirements.txt --break-system-packages
+```
+OU
+```
+  pip3 install -r requirements.txt --break-system-packages
+```
+##### (Instala, DE FORMA FORÇADA, as bibliotecas em sistemas tipo Linux e segundo o arquivo `requirements.txt`.
+.
+
+### Estabelecimento de contrato
+
+O arquivo .zip da versão da aplicação responsável por estabelecer um contrato (ferramenta da blockchain Ethereum) possui ```contract``` antes de seu número de versão. Para iniciar o programa, execute o arquivo ```contract_maker.py```
+
+![tela_inicial_contrato](/imgs/contract_waiting.png?raw=true "Instruções do início do programa e prompt de entrada do endereço do cliente da blockchain e da chave privada")
+
+Após o fornecimento do endereço do cliente da blockchain e da chave privada da conta escolhida para a ação de estabelecimento do contrato, o contrato será firmado no blockchain, e seus informações de ABI ("esqueleto" do contrato) e endereço serão exibidas.
+
+![Tela apos estabelecimento do contrato](/imgs/contract_after_deployment.png?raw=true "Resultado de um contrato bem-sucedido")
+
+Note que o valor ABI de um contrato baseado em um determinado compilado solidity deve permanecer o mesmo para qualquer instância criada, ou seja, a menos que sejam feitas alterações na estrutura do contrato, o valor exibido após a ação de estabelecimento do contrato será o mesmo daquele encontrado no arquivo de propriedades de cada servidor (`/application/properties.py` a partir do diretório principal da aplicação do servidor), dispensando qualquer mudança.
+
+No entanto, o endereço do contrato é único para cada instância do mesmo, e considerando que todos os servidores conectados a um sistema devem utilizar um único contrato para sincronização, tal endereço possui importância em ser gravado.
+
+Por fim, é importante lembrar que o contrato não limita de forma alguma quem pode realizar as ações de sincronização. Assim sendo, o uso do sistema em situações reais deve ser fazer uso de uma distribuição privada do Ethereum, distribuição essa que só permita a inclusão de clientes e contas criados em clientes existente e utilizando contas existentes.
+
+### ☁️ Servidor
+O arquivo .zip do servidor possui ```server``` antes de seu número de versão. Para iniciar o programa do servidor, execute o arquivo ```server.py```, encontrado no diretório principal da aplicação. Após a inicialização, será pedido ao usuário do sistema que insira o endereço do cliente da blockchain e da chave privada de uma conta qualquer existente na blockchain, e do endereço do contrato utilizado para a ação de sincronização. Também será requisitada a entrada de um endereço para o broker MQTT, sempre na porta TCP 1883. Caso deseje usar um broker MQTT que está rodando com o mesmo endereço do servidor, também na porta TCP 1883, pressione ENTER sem prover entrada alguma.
 
 Nota: Utilizar a entrada "test" resulta na escolha de um broker MQTT de teste pre-definido, por padrão aquele da [EMQX](https://www.emqx.com/en/mqtt/public-mqtt5-broker) (endereço: broker.emqx.io, porta TCP 1883).
 
-![Tela inicial](/imgs/server_waiting.png?raw=true "Instruções do início do programa e prompt de entrada do broker MQTT")
+![tela_inicial_servidor](/imgs/server_waiting.png?raw=true "Instruções do início do programa e prompt de entrada do broker MQTT, endereço do cliente da blockchain e da chave privada")
+
+Não existe verificação para a entrada de informações corretas / válidas, mas a impossibilidade de sincronização não resulta em mal-funcionamento das operações do sistema. Ademais, a impossibilidade de sincronização pode (e deve) ser eventualmente resolvida, o que deve incluir a reinicialização da aplicação do servidor em caso de entrada incorreta.
 
 Após o cadastro de uma estação de carga, o servidor automaticamente gerará um novo ID que deverá ser utilizado na próxima operação do tipo, e em seguida exibirá na tela tal informação.
 
@@ -116,14 +152,6 @@ Quando um veículo agenda com sucesso uma recarga, a estação agendada receber�
 Na atual versão de teste do programa, a recarga é feita apenas pressionando a tecla ENTER no terminal da estação.
 
 ### 🚘 Veículo (Usuário Final)
-
-#### AVISO: Antes de utilizar quaisquer das interfaces gráficas presentes no módulo de veículos, certifique-se de as bibliotecas [TKinter](https://pypi.org/project/tk/) e [Custom TKinter](https://pypi.org/project/customtkinter/) estão instaladas diretamente na máquina que exibirá tais interfaces:
-```console
-sudo apt-get install python3-tk -y && \
-pip3 install customtkinter --break-system-packages
-```
-##### (Instala, DE FORMA FORÇADA, as bibliotecas em sistemas tipo Linux, consulte documentação do componente para fazer o mesmo em outros sistemas operacionais)
-
 Terceiro e último módulo do sistema, a parte referente ao veículo possui ```vehicle``` antes de seu número de versão do arquivo .zip. Para iniciar a aplicação (incluindo janela gráfica), execute o arquivo ```client.py```, encontrado no diretório principal da aplicação. O processo de cadastro de um veículo só requer ao usuário inserir o endereço IP do servidor (e tal entrada só é requisitada no cadastro, sendo "pulada" em execuções seguintes da aplicação). Assim como para a estação de recarga, o programa não detecta e não corrige um endereço IP incorreto, e portanto pode ser necessária a reinicialização do programa caso seja feita uma entrada incorreta.
 
 Em seguida, é perguntado ao usuário o endereço do broker MQTT (porta 1883, entrada vazia para utilizar o broker do servidor conectado).
@@ -230,6 +258,8 @@ Por sua vez, as listas referentes aos parâmetros das requisições possuem o fo
 - nome da requisição = 'urr' => parâmetros = [id-do-veículo (string)]; Requisição para remover um veículo específico que possivelmente está reservado em algum ponto de recarga associado ao servidor que recebeu a requisição.
 
 ![http_req](/imgs/http_req_1.png?raw=true "Enviando requisição http para criação de reserva a um servidor utilizando o software de terceiro Insomnia")
+
+# Sincronização com uso de blockchain tipo Ethereum
 
 # Desenvolvimento com uso de containers por meio de Docker Engine
 ```console
