@@ -257,6 +257,30 @@ Por sua vez, as listas referentes aos parâmetros das requisições possuem o fo
 
 # Sincronização com uso de blockchain tipo Ethereum
 
+Para realizar a sincronização entre os diversos servidores conectados dos registros das transações (compras) realizadas, a aplicação do servidor faz uso de blockchain tipo [Ethereum](https://ethereum.org/en/).
+
+É possível operar diretamente sob a lógica básica da blockchain de modo a obter o resultado necessário (sincronização segura de dados) para a aplicação de recarga de veículos. No entanto, tendo em vista seu grande potencial como ferramenta a ser usada em aplicações descentralizadas, o Ethereum implementa o que é conhecido como "contrato inteligente". Um contrato inteligente nada mais é que uma aplicação cujo código, armazenado em uma transação de uma blockchain, é esperado poder ser executado por qualquer computador que faça parte da blockchain e de acordo com instruções enviadas após sua implementação, podendo após sua "chamada" fazer consulta à base de dados da blockchain ou mesmo realizar uma nova transação.
+
+Ainda com o intuito de facilitar o desenvolvimento de aplicações descentralizadas, criou-se a linguagem de [Solidity](https://soliditylang.org/), a qual permite reduzir funções de manipulação de dados normalmente compostas de várias operações sobre a blockchain em simples chamadas de funções CRUD comuns em diversas linguagens de programação, além de associar diversas funções em sequência a uma única chamada de função na interface da aplicação.
+
+![pure_sol](/imgs/sol_bit.png?raw=true "Código solidity para estabelecer o contrato utilizado pela aplicação do servidor.")
+
+Utilizando Solidity, a aplicação atual estabelece um contrato inteligente com as seguintes chamadas:
+
+## adicionarLista(string memory jsonData)
+
+Adiciona um novo elemento à lista utilizada para sincronização. Qualquer objeto capaz de ser transformado em string por meio de serialização json pode ser adicionado.
+
+## obterLista(uint index)
+
+Lê e retorna o elemento da lista (string memory) no índice especificado.
+
+## totalListas()
+
+Avalia o tamanho da lista de sincronização e retorna seu valor em número inteiro (uint)
+
+![python_sol](/imgs/python_bit.png?raw=true "Exemplo, em Python (utilizando web3.py), de chamada remota das funções "totalListas" e "obterLista"")
+
 # Desenvolvimento com uso de containers por meio de Docker Engine
 ```console
 bash dockerscript.sh ACAO SUBPARAMETRO
