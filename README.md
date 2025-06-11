@@ -59,7 +59,7 @@ OU
 ```
 ##### (Instala, DE FORMA FORÇADA, as bibliotecas em sistemas tipo Linux e segundo o arquivo `requirements.txt`.
 
-### Estabelecimento de contrato
+### 📄 Estabelecimento de contrato
 
 O arquivo .zip da versão da aplicação responsável por estabelecer um contrato (ferramenta da blockchain Ethereum) possui ```contract``` antes de seu número de versão. Para iniciar o programa, execute o arquivo ```contract_maker.py```
 
