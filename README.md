@@ -279,7 +279,7 @@ Lê e retorna o elemento da lista (string memory) no índice especificado.
 
 Avalia o tamanho da lista de sincronização e retorna seu valor em número inteiro (uint)
 
-![python_sol](/imgs/python_bit.png?raw=true "Exemplo, em Python (utilizando web3.py), de chamada remota das funções "totalListas" e "obterLista"")
+![python_sol](/imgs/python_bit.png?raw=true "Exemplo, em Python (utilizando web3.py), de chamada remota das funções \"totalListas\" e \"obterLista\"")
 
 # Desenvolvimento com uso de containers por meio de Docker Engine
 ```console
