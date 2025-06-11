@@ -10,7 +10,7 @@ O sistema aqui desenvolvido conta com 4 versões, cada uma destinada a ser execu
 - Estação de recarga: Software instalado em computadores de cada ponto de recarga. Rotineiramente "pergunta" ao servidor se existe veículo a ser recarregado, caso disponível.
 - Veículo (usuário final): Programa responsável por prover a um motorista de automóvel a opção de requisitar serviços de recarga por meio de pagamento, reservar pontos em horários desejado e visualizar compras bem-sucedidas registradas em um determinado servidor. Como dito anteriormente, também monitora o nível de carga do veículo no qual é instalado.
 
-# Sumário (clique para ir até a secção desejada)
+# Sumário (clique para ir até a seção desejada)
 
 [1. Instalação e uso da aplicação](#Instalação-e-uso-da-aplicação)
 
@@ -58,7 +58,6 @@ OU
   pip3 install -r requirements.txt --break-system-packages
 ```
 ##### (Instala, DE FORMA FORÇADA, as bibliotecas em sistemas tipo Linux e segundo o arquivo `requirements.txt`.
-.
 
 ### Estabelecimento de contrato
 
@@ -77,6 +76,7 @@ No entanto, o endereço do contrato é único para cada instância do mesmo, e c
 Por fim, é importante lembrar que o contrato não limita de forma alguma quem pode realizar as ações de sincronização. Assim sendo, o uso do sistema em situações reais deve ser fazer uso de uma distribuição privada do Ethereum, distribuição essa que só permita a inclusão de clientes e contas criados em clientes existente e utilizando contas existentes.
 
 ### ☁️ Servidor
+
 O arquivo .zip do servidor possui ```server``` antes de seu número de versão. Para iniciar o programa do servidor, execute o arquivo ```server.py```, encontrado no diretório principal da aplicação. Após a inicialização, será pedido ao usuário do sistema que insira o endereço do cliente da blockchain e da chave privada de uma conta qualquer existente na blockchain, e do endereço do contrato utilizado para a ação de sincronização. Também será requisitada a entrada de um endereço para o broker MQTT, sempre na porta TCP 1883. Caso deseje usar um broker MQTT que está rodando com o mesmo endereço do servidor, também na porta TCP 1883, pressione ENTER sem prover entrada alguma.
 
 Nota: Utilizar a entrada "test" resulta na escolha de um broker MQTT de teste pre-definido, por padrão aquele da [EMQX](https://www.emqx.com/en/mqtt/public-mqtt5-broker) (endereço: broker.emqx.io, porta TCP 1883).
@@ -240,7 +240,7 @@ Por sua vez, as listas referentes aos parâmetros das mensagens de requisição 
 ![mqtt_sub](/imgs/mqtt_sub.png?raw=true "Recebendo resposta referente a uma requisição do veículo com endereço 172.18.0.1 a partir do broker no endereço 172.18.0.2 utilizando o software de terceiro Mosquitto Client")
 
 ## Protocolo HTTP
-O protocolo HTTP permite o envio e recebimento de informações através de transferência de hypertexto na WEB.É característico de sua constituição tipagens específicas de requisição como POST ou GET . O mesmo é bastante utilizado na construção de APIs REST (apesar de não ser um requisito para tal). Sua utilização no projeto é conveniente na medida que ja prevê por padrão um retorno para requisições.
+O protocolo HTTP permite o envio e recebimento de informações através de transferência de hypertexto na WEB.É característico de sua constituição tipagens específicas de requisição como POST ou GET . O mesmo é bastante utilizado na construção de APIs REST (apesar de não ser um requisito para tal). Sua utilização no projeto é conveniente na medida que prevê por padrão um retorno para requisições.
 
 Para realizar uma requisição HTTP o servidor-remetente deve enviar uma requisição do tipo POST com um corpo JSON para a URL http://endereço-do-destinatário:porta/submit. Existem dois tipos de requisições disponíveis para serem feitas aos servidores atuais: realizar reserva e desfazer reserva.
 
@@ -292,7 +292,7 @@ bash dockerscript.sh stop
 bash dockerscript.sh update
 ```
 
-### > CONTROL Assume o controle do terminal do container especificado no parâmetro `SUBPARAMETRO`, sendo sv01-sv04 referente a cada um dos quatro containers do servidores, cs01-cs10 referente a cada um dos dez containers das estações, e ev01-ev04 referente a cada um dos dos quatro containers dos veículos.
+### > CONTROL Assume o controle do terminal do container especificado no parâmetro `SUBPARAMETRO`, sendo bcm referente ao container da aplicação de estabelecimento de contrato, sv01-sv04 referente a cada um dos quatro containers do servidores, cs01-cs10 referente a cada um dos dez containers das estações, e ev01-ev04 referente a cada um dos dos quatro containers dos veículos.
 
 - Exemplo:
 ```console
