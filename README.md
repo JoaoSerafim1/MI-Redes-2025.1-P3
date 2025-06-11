@@ -39,7 +39,7 @@ O sistema aqui desenvolvido conta com 4 versões, cada uma destinada a ser execu
 
 As versões do sistema destinadas a usuários distintos estão disponíveis individualmente neste repositório online, em formato .zip, na sessão "Releases" (encontrada no canto direito da tela inicial do repositório na maioria dos navegadores).
 
-Cada versão do sistema distribuído possui seus requerimentos em termos de bibliotecas Python contidos em arquivos `requirements.txt`, estando esses nos diretórios principais das aplicações.
+Cada versão do sistema distribuído possui  requerimentos em termos de bibliotecas Python contidos em arquivos `requirements.txt`, estando esses nos diretórios principais das aplicações.
 ```
   pip install -r requirements.txt
 ```
@@ -65,7 +65,7 @@ O arquivo .zip da versão da aplicação responsável por estabelecer um contrat
 
 ![tela_inicial_contrato](/imgs/contract_waiting.png?raw=true "Instruções do início do programa e prompt de entrada do endereço do cliente da blockchain e da chave privada")
 
-Após o fornecimento do endereço do cliente da blockchain e da chave privada da conta escolhida para a ação de estabelecimento do contrato, o contrato será firmado no blockchain, e seus informações de ABI ("esqueleto" do contrato) e endereço serão exibidas.
+Após o fornecimento do endereço do cliente da blockchain e da chave privada da conta escolhida para a ação de estabelecimento do contrato, o contrato será firmado no blockchain, e suas informações de ABI ("esqueleto" do contrato) e endereço serão exibidas.
 
 ![Tela apos estabelecimento do contrato](/imgs/contract_after_deployment.png?raw=true "Resultado de um contrato bem-sucedido")
 
@@ -73,7 +73,7 @@ Note que o valor ABI de um contrato baseado em um determinado compilado solidity
 
 No entanto, o endereço do contrato é único para cada instância do mesmo, e considerando que todos os servidores conectados a um sistema devem utilizar um único contrato para sincronização, tal endereço possui importância em ser gravado.
 
-Por fim, é importante lembrar que o contrato não limita de forma alguma quem pode realizar as ações de sincronização. Assim sendo, o uso do sistema em situações reais deve ser fazer uso de uma distribuição privada do Ethereum, distribuição essa que só permita a inclusão de clientes e contas criados em clientes existente e utilizando contas existentes.
+Por fim, é importante lembrar que o contrato não limita de forma alguma quem pode realizar as ações de sincronização. Assim sendo, a implementação do sistema distribuído em situações reais deve ser fazer uso de uma distribuição privada do Ethereum, distribuição essa que só permita a inclusão de clientes e contas criados em clientes existente e utilizando contas existentes.
 
 ### ☁️ Servidor
 
