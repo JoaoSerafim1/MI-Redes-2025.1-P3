@@ -29,13 +29,9 @@ O sistema aqui desenvolvido conta com 4 versões, cada uma destinada a ser execu
 ## Requisitos básicos
 - Sistema operacional compatível com protocolo TCP-IP e Python (ex: [Ubuntu](https://ubuntu.com/download), [Windows](https://www.microsoft.com/pt-br/windows/)).
 - [Python](https://www.python.org/downloads/) 3.9 (recomendado: gerenciador de ambientes virtuais [Anaconda](https://www.anaconda.com/download)).
-- [Biblioteca paho-mqtt](https://pypi.org/project/paho-mqtt/) para Python:
-
-  ```
-  pip3 install requests --break-system-packages
-  ```
-  ##### (Instala, DE FORMA FORÇADA, a biblioteca em sistemas tipo Linux, consulte documentação do componente para fazer o mesmo em outros sistemas operacionais)
-
+- [Pip para Python](https://pypi.org/project/pip/)
+- Contrato: [wget](https://www.gnu.org/software/wget/) (apenas para Linux), [build-essential](https://packages.ubuntu.com/jammy/build-essential) (apenas para Linux)
+- Veículo: [tkinter](https://docs.python.org/3/library/tkinter.html), [fontconfig](https://www.freedesktop.org/wiki/Software/fontconfig/) (apenas para Linux)
 ## Recursos Adicionais
 - Servidor: Broker MQTT (ex: [Eclipse Mosquitto](https://mosquitto.org/download/))
   
