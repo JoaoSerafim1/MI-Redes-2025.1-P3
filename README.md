@@ -1,4 +1,4 @@
-# Sistemas distribuídos - Recarga de Veículos Elétricos com protocolos de comunicação MQTT-ZMQ / HTTP-REST e uso de blockchain tipo Ethereum.
+# Sistemas distribuídos - recarga de veículos elétricos com protocolos de comunicação MQTT / HTTP-REST e uso de blockchain tipo Ethereum.
 
 Chamamos sistemas distribuídos aqueles compostos por várias instâncias individuais de aplicação, costumeiramente de dois ou mais tipos distintos, que trabalham em conjunto para prover um serviço em massa.
 
