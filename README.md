@@ -281,6 +281,12 @@ Avalia o tamanho da lista de sincronização e retorna seu valor em número inte
 
 ![python_sol](/imgs/python_bit.png?raw=true "Exemplo, em Python (utilizando web3.py), de chamada remota das funções \"totalListas\" e \"obterLista\"")
 
+No contexto da aplicação do servidor como é atualmente, a informação a ser guardada está no formato da string gerada (por serialização JSON) com base na lista:
+- [tipo-de-informacao(string), identificador-da-informacao(string), OBJETO-A-SER-GUARDADO]
+  - tipo-de-informacao => Deve ser 'prc' atualmente, apenas.
+  - identificador-da-informacao => ID da compra atualmente, apenas.
+  - OBJETO-A-SER-GUARDADO => Qualquer objeto totalmente compativel com serialização JSON, o qual guarda as informacoes do elemento a ser sincronizado.
+
 # Desenvolvimento com uso de containers por meio de Docker Engine
 ```console
 bash dockerscript.sh ACAO SUBPARAMETRO
